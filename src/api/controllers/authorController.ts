@@ -1,0 +1,50 @@
+import {NextFunction, Request, Response} from 'express';
+import {Author} from '../../types/LocalTypes';
+import {createAuthor, getAllAuthors, getAuthor} from '../models/authorModel';
+import CustomError from '../../classes/CustomError';
+
+const authorsGet = (
+  req: Request,
+  res: Response<Author[]>,
+  next: NextFunction,
+) => {
+  try {
+    const authors = getAllAuthors();
+    res.json(authors);
+  } catch (error) {
+    next(new CustomError((error as Error).message, 500));
+  }
+};
+
+const authorGet = (
+  req: Request<{id: string}>,
+  res: Response<Author>,
+  next: NextFunction,
+) => {
+  try {
+    const {id} = req.params;
+    const author = getAuthor(Number(id));
+    if (!author) {
+      next(new CustomError('No author found', 404));
+      return;
+    }
+    res.json(author);
+  } catch (error) {
+    next(new CustomError((error as Error).message, 500));
+  }
+};
+
+const authorPost = (
+  req: Request<unknown, unknown, Omit<Author, 'author_id'>>,
+  res: Response<{author_id: number | bigint}>,
+  next: NextFunction,
+) => {
+  try {
+    const author = createAuthor(req.body);
+    res.status(201).json({author_id: author});
+  } catch (error) {
+    next(new CustomError((error as Error).message, 500));
+  }
+};
+
+export {authorsGet, authorGet, authorPost};
