@@ -6,9 +6,13 @@ const getAllAuthors = () => {
 };
 
 const getAuthor = (id: number) => {
-  return db
+  const author = db
     .prepare<number, Author>('SELECT * FROM authors WHERE author_id = ?')
     .get(id);
+  if (!author) {
+    throw new Error('Author not found');
+  }
+  return author;
 };
 
 const createAuthor = (author: Omit<Author, 'author_id'>) => {
@@ -18,7 +22,7 @@ const createAuthor = (author: Omit<Author, 'author_id'>) => {
   if (!stmt.lastInsertRowid) {
     throw new Error('Failed to insert author');
   }
-  return stmt.lastInsertRowid;
+  return getAuthor(Number(stmt.lastInsertRowid));
 };
 
 const updateAuthor = (id: number, name: string, email: string): Author => {

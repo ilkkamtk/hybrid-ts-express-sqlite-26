@@ -38,14 +38,14 @@ describe('Author functions', () => {
     const newAuthor = createAuthor(author);
     expect(newAuthor.name).toBe(author.name);
     expect(newAuthor.email).toBe(author.email);
-    author.id = newAuthor.id;
+    author.author_id = newAuthor.author_id;
     // Set author_id for article here after we have the actual ID
-    article.author_id = author.id;
+    article.author = author.author_id;
   });
 
   // Test getAuthor function
   it('getAuthor should return the author', () => {
-    const foundAuthor = getAuthor(author.id);
+    const foundAuthor = getAuthor(author.author_id);
     expect(foundAuthor).toEqual(author);
   });
 
@@ -62,7 +62,7 @@ describe('Author functions', () => {
   // Test updateAuthor function
   it('updateAuthor should return the updated author', () => {
     const updatedAuthor = updateAuthor(
-      author.id,
+      author.author_id,
       'Updated Author',
       randomstring.generate(7) + '@metropolia.fi',
     );
@@ -77,7 +77,7 @@ describe('Article functions', () => {
     const newArticle = createArticle(article);
     expect(newArticle.title).toBe(article.title);
     expect(newArticle.description).toBe(article.description);
-    article.id = newArticle.id;
+    article.article_id = newArticle.article_id;
   });
 
   // Test createArticle function again to test transactions in authorModel
@@ -89,7 +89,7 @@ describe('Article functions', () => {
 
   // Test getArticle function
   it('getArticle should return the article', () => {
-    const foundArticle = getArticle(article.id);
+    const foundArticle = getArticle(article.article_id);
     expect(foundArticle).toEqual(article);
   });
 
@@ -106,10 +106,9 @@ describe('Article functions', () => {
   // Test updateArticle function
   it('updateArticle should return the updated article', () => {
     const updatedArticle = updateArticle(
-      article.id,
+      article.article_id,
       'Updated Title',
       'Updated Description',
-      author.id,
     );
     expect(updatedArticle.title).toBe('Updated Title');
     expect(updatedArticle.description).toBe('Updated Description');
@@ -120,13 +119,13 @@ describe('Article functions', () => {
 describe('Delete test data', () => {
   // delete article
   it('deleteArticle should delete the article', () => {
-    deleteArticle(article.id, author.id);
-    expect(() => getArticle(article.id)).toThrow('Article not found');
+    deleteArticle(article.article_id);
+    expect(() => getArticle(article.article_id)).toThrow('Article not found');
   });
 
   // delete author
   it('deleteAuthor should delete the author', () => {
-    deleteAuthor(author.id);
-    expect(() => getAuthor(author.id)).toThrow('Author not found');
+    deleteAuthor(author.author_id);
+    expect(() => getAuthor(author.author_id)).toThrow('Author not found');
   });
 });
