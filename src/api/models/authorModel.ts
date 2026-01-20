@@ -21,4 +21,22 @@ const createAuthor = (author: Omit<Author, 'author_id'>) => {
   return stmt.lastInsertRowid;
 };
 
-export {getAllAuthors, getAuthor, createAuthor};
+const updateAuthor = (id: number, name: string, email: string): Author => {
+  const stmt = db
+    .prepare('UPDATE authors SET name = ?, email = ? WHERE author_id = ?')
+    .run(name, email, id);
+  if (stmt.changes === 0) {
+    throw new Error('Failed to update author');
+  }
+  return getAuthor(id)!;
+};
+
+const deleteAuthor = (id: number): void => {
+  const stmt = db.prepare('DELETE FROM authors WHERE author_id = ?').run(id);
+
+  if (stmt.changes === 0) {
+    throw new Error('Author not found');
+  }
+};
+
+export {getAllAuthors, getAuthor, createAuthor, updateAuthor, deleteAuthor};
