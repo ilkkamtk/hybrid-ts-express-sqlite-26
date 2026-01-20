@@ -52,8 +52,9 @@ describe('Author functions', () => {
   // Test getAllAuthors function
   it('getAllAuthors should return an array of authors', () => {
     const authors = getAllAuthors();
+    console.log('lill', authors);
     for (const author of authors) {
-      expect(author).toHaveProperty('id');
+      expect(author).toHaveProperty('author_id');
       expect(author).toHaveProperty('name');
       expect(author).toHaveProperty('email');
     }
@@ -68,6 +69,16 @@ describe('Author functions', () => {
     );
     expect(updatedAuthor.name).toBe('Updated Author');
   });
+
+  // Test update only name
+  it('updateAuthor should return the updated author when only name is changed', () => {
+    const updatedAuthor = updateAuthor(
+      author.author_id,
+      'Name Only Update',
+      author.email,
+    );
+    expect(updatedAuthor.name).toBe('Name Only Update');
+  });
 });
 
 // Unit tests to test functions in src/api/models/articleModel.ts
@@ -77,6 +88,7 @@ describe('Article functions', () => {
     const newArticle = createArticle(article);
     expect(newArticle.title).toBe(article.title);
     expect(newArticle.description).toBe(article.description);
+    expect(newArticle.author).toBe(article.author);
     article.article_id = newArticle.article_id;
   });
 
@@ -90,6 +102,7 @@ describe('Article functions', () => {
   // Test getArticle function
   it('getArticle should return the article', () => {
     const foundArticle = getArticle(article.article_id);
+    console.log('lollero', foundArticle, article);
     expect(foundArticle).toEqual(article);
   });
 
@@ -97,7 +110,7 @@ describe('Article functions', () => {
   it('getAllArticles should return an array of articles', () => {
     const articles = getAllArticles();
     for (const article of articles) {
-      expect(article).toHaveProperty('id');
+      expect(article).toHaveProperty('article_id');
       expect(article).toHaveProperty('title');
       expect(article).toHaveProperty('description');
     }

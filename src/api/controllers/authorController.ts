@@ -42,12 +42,12 @@ const authorGet = (
 
 const authorPost = (
   req: Request<unknown, unknown, Omit<Author, 'author_id'>>,
-  res: Response<{author_id: number | bigint}>,
+  res: Response<Author>,
   next: NextFunction,
 ) => {
   try {
     const author = createAuthor(req.body);
-    res.status(201).json({author_id: author});
+    res.status(201).json(author);
   } catch (error) {
     next(new CustomError((error as Error).message, 500));
   }

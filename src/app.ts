@@ -24,6 +24,12 @@ app.use(express.json());
 // serve public folder for apidoc
 app.use(express.static('public'));
 
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Welcome to my REST API',
+  });
+});
+
 app.use('/api/v1', api);
 
 app.use(notFound);
