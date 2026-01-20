@@ -10,6 +10,7 @@ type Article = {
   article_id: number;
   title: string;
   description: string;
+  author: number;
 };
 
 type Author = {

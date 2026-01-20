@@ -18,15 +18,15 @@ import randomstring from 'randomstring';
 
 // Create new article for testing
 const article: Article = {
-  id: 1, // some random id
+  article_id: 1, // some random id
   title: 'Test Article',
   description: 'This is the content of article 1',
-  author_id: 1, // some random author id
+  author: 1, // some random author id
 };
 
 // Create new author for testing
 const author: Author = {
-  id: 1,
+  author_id: 1,
   name: 'Test Author',
   email: randomstring.generate(7) + '@metropolia.fi',
 };
