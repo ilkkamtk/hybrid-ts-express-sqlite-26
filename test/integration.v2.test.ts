@@ -1,6 +1,6 @@
 import app from '../src/app';
 import request from 'supertest';
-import {Article, Author} from '../src/types/LocalTypes';
+import {Article, Author, MessageResponse} from '../src/types/LocalTypes';
 import randomstring from 'randomstring';
 
 // test that server is running
@@ -34,10 +34,11 @@ describe('Testing authors endpoint', () => {
         .post('/api/v1/authors')
         .send(author)
         .expect(201);
-      const newAuthor = response.body as Author;
-      expect(newAuthor.name).toBe(author.name);
-      expect(newAuthor.email).toBe(author.email);
-      author.author_id = newAuthor.author_id;
+      const newAuthor = response.body as MessageResponse & {author: Author};
+      expect(newAuthor.message).toBe('Author created successfully');
+      expect(newAuthor.author.name).toBe(author.name);
+      expect(newAuthor.author.email).toBe(author.email);
+      author.author_id = newAuthor.author.author_id;
       // Set author_id for article here after we have the actual ID
       article.author = author.author_id;
     } catch (error) {
@@ -87,9 +88,12 @@ describe('Testing authors endpoint', () => {
         .put(`/api/v1/authors/${author.author_id}`)
         .send(updatedAuthor)
         .expect(200);
-      const authorResponse = response.body as Author;
-      expect(authorResponse.name).toBe(updatedAuthor.name);
-      expect(authorResponse.email).toBe(updatedAuthor.email);
+      const authorResponse = response.body as MessageResponse & {
+        author: Author;
+      };
+      expect(authorResponse.message).toBe('Author updated successfully');
+      expect(authorResponse.author.name).toBe(updatedAuthor.name);
+      expect(authorResponse.author.email).toBe(updatedAuthor.email);
     } catch (error) {
       console.error('Update author test failed:', error);
       throw error;
@@ -105,10 +109,11 @@ describe('Testing articles endpoint', () => {
         .post('/api/v1/articles')
         .send(article)
         .expect(201);
-      const newArticle = response.body as Article;
-      expect(newArticle.title).toBe(article.title);
-      expect(newArticle.description).toBe(article.description);
-      article.article_id = newArticle.article_id;
+      const newArticle = response.body as MessageResponse & {article: Article};
+      expect(newArticle.message).toBe('Article created successfully');
+      expect(newArticle.article.title).toBe(article.title);
+      expect(newArticle.article.description).toBe(article.description);
+      article.article_id = newArticle.article.article_id;
     } catch (error) {
       console.error('Create article test failed:', error);
       throw error;
@@ -122,9 +127,10 @@ describe('Testing articles endpoint', () => {
         .post('/api/v1/articles')
         .send(article)
         .expect(201);
-      const newArticle = response.body as Article;
-      expect(newArticle.title).toBe(article.title);
-      expect(newArticle.description).toBe(article.description);
+      const newArticle = response.body as MessageResponse & {article: Article};
+      expect(newArticle.message).toBe('Article created successfully');
+      expect(newArticle.article.title).toBe(article.title);
+      expect(newArticle.article.description).toBe(article.description);
     } catch (error) {
       console.error('Create second article test failed:', error);
       throw error;
@@ -173,9 +179,14 @@ describe('Testing articles endpoint', () => {
         .put(`/api/v1/articles/${article.article_id}`)
         .send(updatedArticle)
         .expect(200);
-      const articleResponse = response.body as Article;
-      expect(articleResponse.title).toBe(updatedArticle.title);
-      expect(articleResponse.description).toBe(updatedArticle.description);
+      const articleResponse = response.body as MessageResponse & {
+        article: Article;
+      };
+      expect(articleResponse.message).toBe('Article updated successfully');
+      expect(articleResponse.article.title).toBe(updatedArticle.title);
+      expect(articleResponse.article.description).toBe(
+        updatedArticle.description,
+      );
     } catch (error) {
       console.error('Update article test failed:', error);
       throw error;
@@ -188,10 +199,12 @@ describe('Delete test data', () => {
   // Test DELETE /articles/:id
   it('DELETE /articles/:id should delete the article', async () => {
     try {
-      await request(app)
+      const response = await request(app)
         .delete(`/api/v1/articles/${article.article_id}`)
-        .send({author_id: article.author}) // Use article.author instead of author.author_id
-        .expect(204);
+        .send({author_id: article.author}) // Use article.author_id instead of author.id
+        .expect(200);
+      const deleteResponse = response.body as MessageResponse;
+      expect(deleteResponse.message).toBe('Article deleted successfully');
     } catch (error) {
       console.error('Delete test failed:', error);
       throw error;
@@ -200,8 +213,10 @@ describe('Delete test data', () => {
 
   // Test DELETE /authors/:id
   it('DELETE /authors/:id should delete the author', async () => {
-    await request(app)
+    const response = await request(app)
       .delete(`/api/v1/authors/${author.author_id}`)
-      .expect(204);
+      .expect(200);
+    const deleteResponse = response.body as MessageResponse;
+    expect(deleteResponse.message).toBe('Author deleted successfully');
   });
 });
