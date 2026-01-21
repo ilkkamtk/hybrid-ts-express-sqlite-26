@@ -10,7 +10,7 @@ const getAuthor = (id: number) => {
     .prepare<number, Author>('SELECT * FROM authors WHERE author_id = ?')
     .get(id);
   if (!author) {
-    throw new Error('Author not found');
+    return null;
   }
   return author;
 };

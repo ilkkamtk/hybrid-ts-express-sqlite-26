@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express';
-import {Author} from '../../types/LocalTypes';
+import {Author, MessageResponse} from '../../types/LocalTypes';
 import {
   createAuthor,
   deleteAuthor,
@@ -42,12 +42,16 @@ const authorGet = (
 
 const authorPost = (
   req: Request<unknown, unknown, Omit<Author, 'author_id'>>,
-  res: Response<Author>,
+  res: Response<MessageResponse & {author: Author}>,
   next: NextFunction,
 ) => {
   try {
     const author = createAuthor(req.body);
-    res.status(201).json(author);
+    if (!author) {
+      next(new CustomError('Failed to create author', 500));
+      return;
+    }
+    res.status(201).json({message: 'Author created successfully', author});
   } catch (error) {
     next(new CustomError((error as Error).message, 500));
   }
