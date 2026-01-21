@@ -36,11 +36,15 @@ const updateAuthor = (id: number, name: string, email: string): Author => {
 };
 
 const deleteAuthor = (id: number): void => {
-  const stmt = db.prepare('DELETE FROM authors WHERE author_id = ?').run(id);
+  const deleteTransactions = db.transaction((id: number) => {
+    db.prepare('DELETE FROM articles WHERE author = ?').run(id);
+    const stmt = db.prepare('DELETE FROM authors WHERE author_id = ?').run(id);
+    if (stmt.changes === 0) {
+      throw new Error('Author not found');
+    }
+  });
 
-  if (stmt.changes === 0) {
-    throw new Error('Author not found');
-  }
+  deleteTransactions(id);
 };
 
 export {getAllAuthors, getAuthor, createAuthor, updateAuthor, deleteAuthor};
