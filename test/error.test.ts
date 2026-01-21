@@ -1,7 +1,7 @@
 import app from '../src/app';
 import request from 'supertest';
-import {Article, Author} from '../src/types/LocalTypes';
-import randomstring from 'randomstring';
+// import {Article, Author} from '../src/types/LocalTypes';
+// import randomstring from 'randomstring';
 
 // test that server is running
 describe('server should be running', () => {
@@ -10,20 +10,20 @@ describe('server should be running', () => {
   });
 });
 
-// Create new article for testing
-const article: Article = {
-  article_id: 1, // some random id
-  title: 'Test Article',
-  description: 'This is the content of article 1',
-  author: 1, // some random author id
-};
+// // Create new article for testing
+// const article: Article = {
+//   article_id: 1, // some random id
+//   title: 'Test Article',
+//   description: 'This is the content of article 1',
+//   author: 1, // some random author id
+// };
 
-// Create new author for testing
-const author: Author = {
-  author_id: 1,
-  name: 'Test Author',
-  email: randomstring.generate(7) + '@metropolia.fi',
-};
+// // Create new author for testing
+// const author: Author = {
+//   author_id: 1,
+//   name: 'Test Author',
+//   email: randomstring.generate(7) + '@metropolia.fi',
+// };
 
 describe('Testing authors endpoint errors', () => {
   // Test GET /authors/:id with non-existing id
